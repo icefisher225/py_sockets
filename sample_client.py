@@ -24,8 +24,16 @@ def main():
     ip = "localhost"
     port = 12345
     sock = ClientSocket(ip, port)
+    err = sock.connect()
+    print(err)
+    if err[0] == 1:
+        print(err[1])
+        return 0
+    time.sleep(.1)
+    # print(sock.recv())
+    sock.send("UwU world~~")
 
 
 
-if __name__ = "__main__":
+if __name__ == "__main__":
     main()

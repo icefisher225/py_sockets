@@ -1,6 +1,7 @@
 from strictly import *
 import socket
 import caoe
+import os
 
 caoe.install()
 
@@ -53,17 +54,18 @@ class ServerSocket(Socketer):
         :return: True if listening, False if not
         """
         if self.listening == True:
-            return True
+            return
         self.listening = True
-        return False
 
 
 class ServerCommSocket():
-    def __init__(self, clientsock, ip="0.0.0.0", error=None, msg=None):
+    def __init__(self, clientsock, ip="0.0.0.0", port=9999, **kwargs):
         self._sock = clientsock
         self.ip = ip
-        self.error = error
-        self.msg = msg
+        self.port = port
+        self.error = kwargs.get("error") if ("error" in kwargs) else None
+        self.msg = kwargs.get("msg") if ("msg" in kwargs) else None
+        self._sock.set_inheritable(True)
 
     def __enter__(self):
         # take no action on context enter
@@ -99,7 +101,7 @@ class ServerCommSocket():
                 data += self._sock.recv(2048)
                 cur = len(data)
             data.decode()
-            return data
+            return data.decode()
 
 @strictly
 def _str_to_msgbytes(src: str) -> bytes:
@@ -134,7 +136,9 @@ def _accept(serversock) -> ServerCommSocket:
         (clientsock, addr) = serversock._sock.accept()
     except Exception as e:
         return _error_sock(f"Exception caught: {e}")
-    return ServerCommSocket(clientsock, address)
+    if clientsock.get_inheritable() == False:
+        clientsock.set_inheritable(True)
+    return ServerCommSocket(clientsock, addr[0], addr[1])
 
 @strictly
 def _bind(serversock) -> None:
@@ -145,8 +149,8 @@ def _listen(serversock, num) -> None:
     serversock._sock.listen(num)
 
 @strictly
-def _error_sock(msg=None) -> ServerCommSocket:
-    return ServerCommSocket(None, None, 1, msg)
+def _error_sock(msge=None) -> ServerCommSocket:
+    return ServerCommSocket(None, error=1, msg=msge)
 
 @strictly
 def get_connection(serversock, num = 10) -> ServerCommSocket:
@@ -160,13 +164,17 @@ def get_connection(serversock, num = 10) -> ServerCommSocket:
     :return: ClientSocket object bound to first requested connection
              ClientSocket object with error state (clientsocket.error set to 1)
     '''
-    if serversock.listening == False:
+    if serversock.get_lsn == False:
         _bind(serversock)
+        print(f"Serversocket bound")
         _listen(serversock, num)
-        serversock.listening = True
-    serversock._set_timeout(10) # If more than 10 seconds of waiting for new connection, throws error
+        print(f"Serversocket listening for {num} connections")
+        serversock.set_lsn
+    print(f"socket is listening: {serversock.get_lsn}")
+    # serversock._set_timeout(30) # If more than 10 seconds of waiting for new connection, throws error
     try:
-        res = _accept(serversock)
+        conn = _accept(serversock)
+        print("accepted connection")
+        return conn
     except socket.timeout:
         return _error_sock(f"Socket Timeout Error")
-    return res
