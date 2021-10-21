@@ -85,7 +85,21 @@ class ServerCommSocket():
             msg=msg[CHUNK:]
         print("Message Sent")
 
-
+    @strictly
+    def recv(self) -> str:
+        while True:
+            try:
+                msglen = _message_len(self._sock)
+            except:
+                raise Exception("Incorrect data recived, exiting")
+                return 1
+            cur = 0
+            data = bytes()
+            while cur<msglen:
+                data += self._sock.recv(2048)
+                cur = len(data)
+            data.decode()
+            return data
 
 @strictly
 def _str_to_msgbytes(src: str) -> bytes:

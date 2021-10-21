@@ -17,7 +17,7 @@ except ModuleNotFoundError as e:
 
 
 def run(commsock):
-    commsock.send(1)
+    commsock.send(f"host = {commsock.ip}")
     print(commsock.recv())
 
 
