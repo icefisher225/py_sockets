@@ -4,6 +4,9 @@ import threading
 import multiprocessing
 import time
 import math
+import caoe
+
+caoe.install()
 
 class Socketer:
     def __init__(self, sock=None):
@@ -58,10 +61,10 @@ class ServerSocket(Socketer):
         return False
 
 
-class ClientSocket():
-    def __init__(self, clientsock, address="0.0.0.0", error=None, msg=None):
+class ServerCommSocket():
+    def __init__(self, clientsock, ip="0.0.0.0", error=None, msg=None):
         self.clientsock = clientsock
-        self.address = address
+        self.ip = ip
         self.error = error
         self.msg = msg
 
@@ -112,7 +115,7 @@ def message_len(sock) -> int:
     return msg_len
 
 @strictly
-def _accept(serversock) -> ClientSocket:
+def _accept(serversock) -> ServerCommSocket:
     '''
     private function
     '''
@@ -120,7 +123,7 @@ def _accept(serversock) -> ClientSocket:
         (clientsock, addr) = serversock.accept()
     except Exception as e:
         return _error_sock(f"Exception caught: {e}")
-    return ClientSocket(clientsock, address)
+    return ServerCommSocket(clientsock, address)
 
 @strictly
 def _bind(serversock) -> None:
@@ -131,11 +134,11 @@ def _listen(serversock, num) -> None:
     serversock.listen(num)
 
 @strictly
-def _error_sock(msg=None) -> ClientSocket:
-    return ClientSocket(None, None, 1, msg)
+def _error_sock(msg=None) -> ServerCommSocket:
+    return ServerCommSocket(None, None, 1, msg)
 
 @strictly
-def get_connection(serversock, num = 10) -> ClientSocket:
+def get_connection(serversock, num = 10) -> ServerCommSocket:
     '''
     Call this function with args passed to get client connection from ServerSocket
     :serversock: serversocket
