@@ -14,8 +14,6 @@ except ModuleNotFoundError as e:
     importfailure=True
 
 
-
-
 def main():
     if importfailure == True:
         print("Import failure")
@@ -32,6 +30,9 @@ def main():
     time.sleep(.1)
     # print(sock.recv())
     sock.send("UwU world~~")
+
+    # Needs threading, one to run event loop, another to send,
+    # a third to recieve
 
 
 
