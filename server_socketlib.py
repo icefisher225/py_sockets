@@ -1,9 +1,5 @@
 from strictly import *
 import socket
-import threading
-import multiprocessing
-import time
-import math
 import caoe
 
 caoe.install()
@@ -31,8 +27,9 @@ class ServerSocket(Socketer):
         self.port = port
         self.q = q
         self.listening = False
-        self.servsock.settimeout(30)
         super().__init__()
+        self._sock.settimeout(60)
+
 
     @property
     def servsock(self):
@@ -40,7 +37,7 @@ class ServerSocket(Socketer):
 
     @strictly
     def _set_timeout(self, time) -> None:
-        self.servsock.settimeout(time)
+        self._sock.settimeout(time)
 
 
     @property
@@ -63,7 +60,7 @@ class ServerSocket(Socketer):
 
 class ServerCommSocket():
     def __init__(self, clientsock, ip="0.0.0.0", error=None, msg=None):
-        self.clientsock = clientsock
+        self._sock = clientsock
         self.ip = ip
         self.error = error
         self.msg = msg
@@ -84,7 +81,7 @@ class ServerCommSocket():
         tot=len(msg)
         cur=0 # current amout of message that has been sent (bytes)
         while len(msg):
-            self.clientsock.send(msg[0:CHUNK])
+            self._sock.send(msg[0:CHUNK])
             msg=msg[CHUNK:]
         print("Message Sent")
 
@@ -108,7 +105,7 @@ def _str_to_msgbytes(src: str) -> bytes:
 
 
 @strictly
-def message_len(sock) -> int:
+def _message_len(sock) -> int:
     msg_len = 0
     for _ in range(4): msg_len = (msg_len << 8) + sock.recv(1)[0]
     sock.recv(1) #this throws away the delimiter
@@ -120,18 +117,18 @@ def _accept(serversock) -> ServerCommSocket:
     private function
     '''
     try:
-        (clientsock, addr) = serversock.accept()
+        (clientsock, addr) = serversock._sock.accept()
     except Exception as e:
         return _error_sock(f"Exception caught: {e}")
     return ServerCommSocket(clientsock, address)
 
 @strictly
 def _bind(serversock) -> None:
-    serversock.bind((serversock.ip, serversock.port))
+    serversock._sock.bind((serversock.ip, serversock.port))
 
 @strictly
 def _listen(serversock, num) -> None:
-    serversock.listen(num)
+    serversock._sock.listen(num)
 
 @strictly
 def _error_sock(msg=None) -> ServerCommSocket:
@@ -153,7 +150,7 @@ def get_connection(serversock, num = 10) -> ServerCommSocket:
         _bind(serversock)
         _listen(serversock, num)
         serversock.listening = True
-    _set_timeout(10) # If more than 10 seconds of waiting for new connection, throws error
+    serversock._set_timeout(10) # If more than 10 seconds of waiting for new connection, throws error
     try:
         res = _accept(serversock)
     except socket.timeout:

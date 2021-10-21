@@ -27,9 +27,9 @@ class Socketer:
 
 
 class ClientSocket(Socketer):
-    def __init__(self, clientsock=None, ip="0.0.0.0", port=9999, error=None, msg=None):
+    def __init__(self, ip="0.0.0.0", port=9999, error=None, msg=None, **kwargs):
         super().__init__()
-        self.clientsock =  self._sock if (clientsock is None) else clientsock
+        self.clientsock = kwargs.get("clientsock") if ("clientsock" in kwargs) else self._sock
         self.ip = ip
         self.port = port
         self.error = error
