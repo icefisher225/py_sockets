@@ -18,14 +18,11 @@ port = 12345
 socket = ClientSocket(ip, port)
 # socket = ClientSocket("10.0.1.200", 12345)
 
-error = socket.connect()
-
-if error[0] == 1:
-    '''
-    Checks if there was an error in making the connection, returns if so.
-    '''
+if socket.connect()[1] == 1:
+    # Checks if there was an error in making the connection, returns if so.
     print(error[1])
     return 0
+    
 time.sleep(.1)
 
 socket.send("Hello, World!")
