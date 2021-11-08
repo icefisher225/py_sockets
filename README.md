@@ -16,7 +16,7 @@ ip = "10.0.1.200"
 port = 12345
 
 socket = ClientSocket(ip, port)
-# or: socket = ClientSocket("10.0.1.200", 12345)
+# socket = ClientSocket("10.0.1.200", 12345)
 
 error = socket.connect()
 
