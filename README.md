@@ -6,12 +6,12 @@ A library to build off later. Hopefully it makes socket-level python programming
 Builtins: socket
 
 Packages:
->strictly (possibly to be removed in future update)
+>strictly (possibly to be removed in future update)\
 >caoe (thread orphanage prevention)
 
 Helpful modules for using this library:
->multiprocessing
->time
+>multiprocessing\
+>time\
 >threading
 
 ## Sample Code
