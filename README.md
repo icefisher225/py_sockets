@@ -3,7 +3,7 @@ A library to build off later. Hopefully it makes socket-level python programming
 
 
 ## Dependencies
-Builtins: socke
+Builtins: socket
 
 Packages: strictly, caoe
 
