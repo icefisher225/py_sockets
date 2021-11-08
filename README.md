@@ -5,7 +5,7 @@ A library to build off later. Hopefully it makes socket-level python programming
 ## Dependencies
 Builtins: socket
 
-Packages: strictly, caoe
+Packages: strictly (possibly to be removed in future update), caoe (thread orphanage prevention)
 
 Helpful modules for using this library: multiprocessing, time, threading
 
