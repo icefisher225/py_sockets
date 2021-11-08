@@ -1,5 +1,5 @@
 # py_sockets
-A library to build off later. Hopefully it makes socket-level python programming faster.
+A library to build off of. Hopefully it makes socket-level python programming faster.<br>Written for Python 3.9.x. 
 
 
 ## Dependencies
