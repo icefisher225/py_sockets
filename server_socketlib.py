@@ -212,4 +212,4 @@ def get_connection(serversock, **kwargs) -> ServerCommSocket:
                     return _error_sock(f"Socket Timeout Error")
                 else:
                     iter += 1
-                    continue #loop with Real timeout
+                    continue #loop with Real (math term) timeout

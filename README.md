@@ -74,19 +74,20 @@ if __name__ == __"main__":
 
 ```python
 from client_socketlib import ClientSocket
+import time
 
 ip = "10.0.1.200"
 port = 12345
 
-socket = ClientSocket(ip, port)
+sock = ClientSocket(ip, port)
 
-if socket.connect() == 1:
-    print(socket.error())
+if sock.connect() == 1:
+    print(sock.error())
     return 1
 
-socket.send("Hello, World!")
+sock.send("Hello, World!")
 
 time.sleep(2)
 
-print(socket.recv())
+print(sock.recv())
 ```

@@ -11,9 +11,7 @@ except ModuleNotFoundError as e:
 
 
 def main():
-    if importfailure == True:
-        print("Import failure")
-        return 1
+    assert importfailure == False, "Import failed. Exiting..."
 
     ip = "localhost"
     port = 12345
