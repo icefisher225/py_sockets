@@ -10,7 +10,7 @@ Packages:
 >caoe (thread orphanage prevention)
 
 Helpful modules for using this library:
->multiprocessing\
+>multiprocessing (server-side only)\
 >time\
 >threading
 
