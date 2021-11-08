@@ -58,8 +58,8 @@ def main():
         else:
             print(f"error: {communication_socket.msg}")
             break
-            #If this is removed, the serversocket can never be told to
-            # exit from the client and will need to be exited locally.
+            # If this "break" is removed, the serversocket can never be told
+            # to exit from the client and will need to be exited locally.
 
     for process in process_list:
         wait(process)
