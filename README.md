@@ -43,22 +43,22 @@ def run(commsock, queue):
 def main():
     ip = "localhost"
     port = 12345
-    queue = mp.Queue()
-    # This is used for interprocess communication, as needed.
-    server_socket = ServerSocket(ip, port, queue)
-
     process_list = list()
+    comqueue = mp.Queue()
+    # This is used for communication back to main loop ONLY
+
+    server_socket = ServerSocket(ip, port, comqueue)    
 
     while True:
-        communication_socket = get_connection(server_socket)
-        if communication_socket.error != None:
-            # If the client sends in "ExitCode"
-            print(f"error: {communication_socket.msg}")
-            break #If this is removed, the serversocket can never be told to exit from the client and will need to be exited directly.
-        else:
-            clientprocess = mp.Process(target = run, args(commsock, queue, ))
+        communication_socket = get_connection(server_socket, num=15, timeout=60)
+        if communication_socket.error == None:
+            clientprocess = mp.Process(target = run, args(commsock, comqueue, ))
             clientprocess.start()
             process_list.append(clientprocess)
+        else:
+            print(f"error: {communication_socket.msg}")
+            break
+            #If this is removed, the serversocket can never be told to exit from the client and will need to be exited locally.
 
     for process in process_list:
         wait(process)
@@ -77,14 +77,10 @@ ip = "10.0.1.200"
 port = 12345
 
 socket = ClientSocket(ip, port)
-# socket = ClientSocket("10.0.1.200", 12345)
 
-if socket.connect()[1] == 1:
-    # Checks if there was an error in making the connection, returns if so.
-    print(error[1])
-    return 0
-
-time.sleep(.1)
+if socket.connect() == 1:
+    print(socket.error())
+    return 1
 
 socket.send("Hello, World!")
 

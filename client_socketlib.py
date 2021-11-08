@@ -34,13 +34,19 @@ class ClientSocket(Socketer):
     def sock(self):
         return self._sock
 
+
+    @property
+    def error():
+        return self.error
+
     @strictly
     def connect(self) -> tuple:
         try:
             self.clientsock.connect((self.ip, self.port))
         except Exception as e:
-            return (1, e)
-        return (0, )
+            self.error = f"{e}"
+            return 1
+        return 0
 
     @strictly
     def send(self, srcmsg:str) -> None:

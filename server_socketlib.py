@@ -1,6 +1,7 @@
 from strictly import *
 import socket
 import caoe
+import queue
 
 caoe.install()
 
@@ -164,37 +165,51 @@ def _error_sock(msge=None) -> ServerCommSocket:
     return ServerCommSocket(None, error=1, msg=msge)
 
 @strictly
-def get_connection(serversock, num = 10) -> ServerCommSocket:
+def get_connection(serversock, **kwargs) -> ServerCommSocket:
     '''
     Call this function with args passed to get client connection from ServerSocket
-    :serversock: serversocket
-    :num: (optional) number of client connections to buffer.
-          for one connection only, set to 0.
-          default is 10.
-          Only used on first call of this function
+    :serversock: ServerSocket
+    :num=<int>: (optional) number of client connections to buffer.
+        For one connection only, set to 0.
+        Default: 10.
+        Only used on first call of this function.
+    :timeout=<int>: (optional) time (seconds) to wait before shutting down
+        server-side socket if no connections are made.
+        Default: 120 seconds
+        Pass -1 for infinite time (running as a service).
     :return: ClientSocket object bound to first requested connection
-             ClientSocket object with error state (clientsocket.error set to 1)
+        ClientSocket object with error state (clientsocket.error set to 1)
     '''
+    num = kwargs.get("num") if ("num" in kwargs) else 10
     if serversock.get_lsn == False:
         _bind(serversock)
         print(f"Serversocket bound")
         _listen(serversock, num)
         print(f"Serversocket listening for {num} connections")
         serversock.set_lsn
-    print(f"socket is listening: {serversock.get_lsn}")
-    # serversock._set_timeout(30) # If more than 10 seconds of waiting for new connection, throws error
+        print(f"socket is listening: {serversock.get_lsn}")
 
     serversock._set_timeout(1)
-    count = 0
+    count = kwargs.get("timeout") if ("timeout" in kwargs) else 120
+
+    iter = 0
     while True:
         try:
             conn = _accept(serversock)
             print("accepted connection")
             return conn
-        except socket.timeout:
-            count += 1
-            code = serversock.q.get()
-            if type(code) = ExitCode:
-                return _error_sock("serverside exitcode sent from client")
-            elif count > 60:
-                return _error_sock(f"Socket Timeout Error")
+        except socket.timeout: #this happens once a second, on timeout
+            try:
+                code = serversock.q.get()
+                if type(code) == ExitCode: #only hits if queue is not empty
+                    return _error_sock(f"Exitcode sent from client")
+                else:
+                    raise queue.Empty() # used to hit exception, this is temporary
+            except queue.Empty:
+                if count == -1:
+                    continue #loop with infinite timeout
+                elif iter > count:
+                    return _error_sock(f"Socket Timeout Error")
+                else:
+                    iter += 1
+                    continue #loop with Real timeout
