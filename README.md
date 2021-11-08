@@ -9,7 +9,7 @@ Packages: strictly, caoe
 
 
 ## Sample code
-
+```python
     from client_socketlib import ClientSocket
 
     ip = "10.0.1.200"
@@ -32,3 +32,4 @@ Packages: strictly, caoe
     time.sleep(2)
 
     print(socket.recv())
+```
