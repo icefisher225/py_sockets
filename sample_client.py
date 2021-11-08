@@ -1,8 +1,4 @@
 import time
-import os
-import sys
-import subprocess
-import threading
 from strictly import *
 
 importfailure = False

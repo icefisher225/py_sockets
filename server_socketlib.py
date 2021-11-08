@@ -1,7 +1,6 @@
 from strictly import *
 import socket
 import caoe
-import os
 
 caoe.install()
 

@@ -3,9 +3,11 @@ A library to build off later. Hopefully it makes socket-level python programming
 
 
 ## Dependencies
-Builtins: socket, time, os, sys, subprocess, threading
+Builtins: socke
 
 Packages: strictly, caoe
+
+Helpful modules for using this library: multiprocessing, time, threading,
 
 ## Sample Code
 
