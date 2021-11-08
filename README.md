@@ -7,7 +7,9 @@ Builtins: socket, time, os, sys, subprocess, threading
 
 Packages: strictly, caoe
 
-## Sample code for a Server
+## Sample Code
+
+### Server:
 
 ```python
 
@@ -44,15 +46,10 @@ def main():
 
 if __name__ == __"main__":
     main()
-
-
 ```
 
+### Client:
 
-
-
-
-## Sample code for a Client
 ```python
 from client_socketlib import ClientSocket
 
