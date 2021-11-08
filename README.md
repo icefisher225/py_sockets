@@ -9,10 +9,17 @@ Packages:
 >strictly (possibly to be removed in future update)\
 >caoe (thread orphanage prevention)
 
+```bash
+python3 -m pip install strictly
+python3 -m pip install caoe
+```
+
 Helpful modules for using this library:
 >multiprocessing (server-side only)\
 >time\
 >threading
+
+
 
 ## Sample Code
 
