@@ -3,9 +3,11 @@ This is a library to make error-handled socket programming faster and easier.<br
 
 
 ## Dependencies
-Builtins: socket
+#### Builtins:
+>socket
 
-Packages:
+
+#### Packages:
 >strictly (possibly to be removed in future update)\
 >caoe (thread orphanage prevention)
 
@@ -14,7 +16,7 @@ python3 -m pip install strictly
 python3 -m pip install caoe
 ```
 
-Helpful modules for using this library:
+#### Helpful modules for using this library:
 >multiprocessing (server-side only)\
 >time\
 >threading
