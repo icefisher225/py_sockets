@@ -1,5 +1,5 @@
 # py_sockets
-This is a library to make error-handled socket programming faster and easier.<br><br>Written for Python 3.9.x. 
+This is a library to make error-handled socket programming faster and easier.<br><br>Written for Python 3.9.x.
 
 
 ## Dependencies
@@ -26,8 +26,7 @@ Helpful modules for using this library:
 ### Server:
 
 ```python
-
-import multiprocessing as mp
+import multiprocessing as mp #used to allow multiple concurrent client connections.
 from server_socketlib import ServerSocket, ServerCommSocket, ExitCode, get_connection
 
 def run(commsock, queue):
