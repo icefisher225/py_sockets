@@ -7,7 +7,7 @@ Builtins: socke
 
 Packages: strictly, caoe
 
-Helpful modules for using this library: multiprocessing, time, threading,
+Helpful modules for using this library: multiprocessing, time, threading
 
 ## Sample Code
 
