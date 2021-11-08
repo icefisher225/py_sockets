@@ -40,7 +40,7 @@ class ServerSocket(Socketer):
         self.q = q
         self.listening = False
         super().__init__()
-        self._sock.settimeout(60)
+        self._sock.settimeout(1)
 
 
     @property
@@ -184,13 +184,17 @@ def get_connection(serversock, num = 10) -> ServerCommSocket:
     print(f"socket is listening: {serversock.get_lsn}")
     # serversock._set_timeout(30) # If more than 10 seconds of waiting for new connection, throws error
 
+    serversock._set_timeout(1)
+    count = 0
     while True:
         try:
             conn = _accept(serversock)
             print("accepted connection")
             return conn
         except socket.timeout:
+            count += 1
             code = serversock.q.get()
             if type(code) = ExitCode:
                 return _error_sock("serverside exitcode sent from client")
-            return _error_sock(f"Socket Timeout Error")
+            elif count > 60:
+                return _error_sock(f"Socket Timeout Error")

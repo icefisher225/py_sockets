@@ -20,8 +20,8 @@ from server_socketlib import ServerSocket, ServerCommSocket, ExitCode, get_conne
 
 def run(commsock, queue):
     commsock.send(f"host attached = {commsock.ip}")
-    data = commsock.recv()
-    if data == "exit" or data == "quit":
+    check = (data := commsock.recv()).split(" ")[0]
+    if check == "exit" or check == "quit":
         queue.put(ExitCode())
     print(data)
     return 0
@@ -39,8 +39,9 @@ def main():
     while True:
         communication_socket = get_connection(server_socket)
         if communication_socket.error != None:
+            # If the client sends in "ExitCode"
             print(f"error: {communication_socket.msg}")
-            break #If this is removed, the serversocket can never be told to exit from the client and will need to be exited directly. 
+            break #If this is removed, the serversocket can never be told to exit from the client and will need to be exited directly.
         else:
             clientprocess = mp.Process(target = run, args(commsock, queue, ))
             clientprocess.start()
