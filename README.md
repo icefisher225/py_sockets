@@ -16,11 +16,14 @@ Helpful modules for using this library: multiprocessing, time, threading
 ```python
 
 import multiprocessing as mp
-from server_socketlib import ServerSocket, ServerCommSocket, get_connection
+from server_socketlib import ServerSocket, ServerCommSocket, ExitCode, get_connection
 
-def run(commsock, q):
+def run(commsock, queue):
     commsock.send(f"host attached = {commsock.ip}")
-    print(commsock.recv())
+    data = commsock.recv()
+    if data == "exit" or data == "quit":
+        queue.put(ExitCode())
+    print(data)
     return 0
 
 
@@ -28,6 +31,7 @@ def main():
     ip = "localhost"
     port = 12345
     queue = mp.Queue()
+    # This is used for interprocess communication, as needed.
     server_socket = ServerSocket(ip, port, queue)
 
     process_list = list()
@@ -36,9 +40,9 @@ def main():
         communication_socket = get_connection(server_socket)
         if communication_socket.error != None:
             print(f"error: {communication_socket.msg}")
-            break #or continue, if you want to ignore errors
+            break #If this is removed, the serversocket can never be told to exit from the client and will need to be exited directly. 
         else:
-            clientprocess = mp.Process(target = run, args(commsock, q, ))
+            clientprocess = mp.Process(target = run, args(commsock, queue, ))
             clientprocess.start()
             process_list.append(clientprocess)
 

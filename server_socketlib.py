@@ -4,6 +4,18 @@ import caoe
 
 caoe.install()
 
+
+class ExitCode:
+    #this is partially a stub
+    def __init__(self):
+        self._code = 1
+
+    @property
+    def ecode(self):
+        return self._code
+
+
+
 class Socketer:
     def __init__(self, sock=None):
         if sock is None:
@@ -171,9 +183,14 @@ def get_connection(serversock, num = 10) -> ServerCommSocket:
         serversock.set_lsn
     print(f"socket is listening: {serversock.get_lsn}")
     # serversock._set_timeout(30) # If more than 10 seconds of waiting for new connection, throws error
-    try:
-        conn = _accept(serversock)
-        print("accepted connection")
-        return conn
-    except socket.timeout:
-        return _error_sock(f"Socket Timeout Error")
+
+    while True:
+        try:
+            conn = _accept(serversock)
+            print("accepted connection")
+            return conn
+        except socket.timeout:
+            code = serversock.q.get()
+            if type(code) = ExitCode:
+                return _error_sock("serverside exitcode sent from client")
+            return _error_sock(f"Socket Timeout Error")
