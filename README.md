@@ -5,6 +5,7 @@ This is a library to make error-handled socket programming faster and easier.<br
 ## Dependencies
 #### Builtins:
   * socket
+  * queue
 
 
 #### Packages:
